@@ -1,0 +1,72 @@
+git init 初始化 git，只有初始化了以后才可以使用 git 相关命令。
+git clone 获取远程项目，并下载到本地。远程库的地址在 GITHUB 项目中会有提供。
+git status 查看本地修改与服务器的差异。
+git add . 将这些差异文件添加，这样就可以提交了。
+git commit –m “这里是注释” 提交更改到服务器。
+git checkout master 更改到master库。
+git pull 将服务器最新的更改获取到本地。
+git merge local master 将本地的local合并到远程的master上。
+git push origin master 正式提交到远程的master服务器上。
+还有“git tag”，“git diff”，“git show”，“git log”，“git remote”等。
+
+git config --global http.sslVerify false   解决克隆失败问题
+
+上传文件
+git add xxx
+git commit -m "加入注释"
+git push origin main
+
+删除文件
+
+
+查看本地修改与服务器的差异
+git status 
+
+生成密钥
+ssh-keygen -t rsa -C "binbin12019@outlook.com"
+
+检测是否连接成功
+ssh -T git@github.com
+
+查看git版本
+git --version
+
+修改全局名称和邮箱
+git config --global user.name "Songothao"
+git config --global user.email "1943191086@qq.com"
+
+查看全局配置信息
+git config --global --list
+
+编辑全局配置信息
+git config --global --edit
+	退出编辑
+	:q  退出，没保存不能退出
+	:q! 不保存退出
+	:wq 写入并退出		
+	:wq!  强制写入并退出
+
+
+查看提交的版本信息
+git log  查看当前版本及以前版本提交信息
+git relog  查看所有版本以及回退的信息
+
+从本地仓库回退的指定版本
+git reset --hard ID
+
+忽略文件
+创建.gitignore文件  并写入不需要提交的文件名
+
+分支操作
+git branch  查看当前所有分支
+git branch 分支名称  把当前分支拷贝，作为副本
+git checkout 分支名称   切换分支
+git merge 分支名称   在当前分支下将分支名称分支合并
+ git branch -d 分支名称  删除已经合并的分支
+ git branch -D 分支名称  强制删除分支， 分支未合并
+
+
+远程仓库
+git push -u 仓库地址 分支名称   推送到远程仓库
+
+git clone 远程仓库地址
