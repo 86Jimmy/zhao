@@ -3,7 +3,7 @@ import math
 
 txt_path = ['tarin_cvbrct_ground.txt', 'val_cvbrct_ground.txt','test_cvbrct_ground.txt',
             'tarin_cvbrct_air.txt', 'val_cvbrct_air.txt', 'test_cvbrct_air.txt',
-			'tarin_airound_ground.txt', 'val_airound_ground.txt', 'test_airound_ground.txt',
+            'tarin_airound_ground.txt', 'val_airound_ground.txt', 'test_airound_ground.txt',
             'tarin_airound_air.txt', 'val_airound_air.txt','test_airound_air.txt']
 
 def generate(dir, label, idx):
@@ -11,7 +11,7 @@ def generate(dir, label, idx):
 	files.sort()
 	print(txt_path[idx*3])
 	print(txt_path[idx*3+1])
-	print(txt_path[idx*3+2])
+    print(txt_path[idx*3+2])
 	trainText = open(txt_path[idx*3],'a')	
 	for file in files[:math.floor(len(files)*0.72)]:
 		fileType = os.path.split(file)
@@ -40,7 +40,7 @@ def generate(dir, label, idx):
 	testText.close()
  
  
-outer_path = 'E:\\Document\\stage1\\data'   #这里是你的图片的目录
+outer_path = '/Public/WenbinHe/stage1/data'   #这里是你的图片的目录
  
  
 if __name__ == '__main__':	

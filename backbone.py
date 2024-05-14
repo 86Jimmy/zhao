@@ -2,7 +2,6 @@ from PIL import Image
 from scipy.io import savemat
 import torch
 import torch.nn as nn 
-import os        
 from torchvision import models
 from torch.utils.data import Dataset
 import argparse
@@ -14,6 +13,8 @@ def parse_option():
     parser = argparse.ArgumentParser('argument for training')
     parser.add_argument('--batch_size', type=int, default=128, metavar='N',
                         help='input batch size for training [default: 100]')    
+    parser.add_argument('--data_set', type=str, default='cvbrct', metavar='N',
+                        help='which data_set would you like to backbone :[cvbrct, airound]') 
     opt = parser.parse_args(args=[])
 
     return opt
@@ -77,34 +78,44 @@ def main():
     model.cuda()
 
     # data_load
-    airound_ground_train = MyDataset(txt_path='tarin_airound_ground.txt', transform=transform_train)
-    airound_ground_test = MyDataset(txt_path='test_airound_ground.txt', transform=transform_train)
-    airound_aerial_train = MyDataset(txt_path='tarin_airound_air.txt', transform=transform_train)
-    airound_aerial_test = MyDataset(txt_path='test_airound_air.txt', transform=transform_train)
-    
-    airound_ground_train_loader  = DataLoader(airound_ground_train, batch_size=opt.batch_size)
-    airound_ground_test_loader  = DataLoader(airound_ground_test, batch_size=opt.batch_size)
-    airound_aerial_train_loader  = DataLoader(airound_aerial_train, batch_size=opt.batch_size)
-    airound_aerial_test_loader  = DataLoader(airound_aerial_test, batch_size=opt.batch_size)
+    if(opt.data_set == "cvbrct"):
+        ground_train = MyDataset(txt_path='tarin_cvbrct_street.txt', transform=transform_train)
+        ground_val = MyDataset(txt_path='val_cvbrct_street.txt', transform=transform_train)
+        ground_test = MyDataset(txt_path='test_cvbrct_street.txt', transform=transform_train)
+        aerial_train = MyDataset(txt_path='tarin_cvbrct_air.txt', transform=transform_train)
+        aerial_val = MyDataset(txt_path='cal_cvbrct_air.txt', transform=transform_train)
+        aerial_test = MyDataset(txt_path='test_cvbrct_air.txt', transform=transform_train)
+    else:
+        ground_train = MyDataset(txt_path='tarin_airound_ground.txt', transform=transform_train)
+        ground_val = MyDataset(txt_path='val_airound_ground.txt', transform=transform_train)
+        ground_test = MyDataset(txt_path='test_airound_ground.txt', transform=transform_train)
+        aerial_train = MyDataset(txt_path='tarin_airound_air.txt', transform=transform_train)
+        aerial_val = MyDataset(txt_path='val_airound_air.txt', transform=transform_train)
+        aerial_test = MyDataset(txt_path='test_airound_air.txt', transform=transform_train)
+
+    ground_train_loader  = DataLoader(ground_train, batch_size=opt.batch_size)
+    ground_val_loader  = DataLoader(ground_val, batch_size=opt.batch_size)
+    ground_test_loader  = DataLoader(ground_test, batch_size=opt.batch_size)
+    aerial_train_loader  = DataLoader(aerial_train, batch_size=opt.batch_size)
+    aerial_val_loader  = DataLoader(aerial_val, batch_size=opt.batch_size)
+    aerial_test_loader  = DataLoader(aerial_test, batch_size=opt.batch_size)
 
     # data_process
-    airound_g_train_feature, airound_g_train_target = \
-        data_process(model, airound_ground_train_loader)
-    airound_g_test_feature, airound_g_tset_target = \
-        data_process(model, airound_ground_test_loader)
-    airound_a_train_feature, airound_a_train_target = \
-        data_process(model, airound_aerial_train_loader)
-    airound_a_test_feature, airound_a_tset_target = \
-        data_process(model, airound_aerial_test_loader)
+    g_train_feature, g_train_target = data_process(model, ground_train_loader)
+    g_val_feature, g_val_target = data_process(model, ground_val_loader)
+    g_test_feature, g_tset_target = data_process(model, ground_test_loader)
+    a_train_feature, a_train_target = data_process(model, aerial_train_loader)
+    a_val_feature, a_val_target = data_process(model, aerial_val_loader)
+    a_test_feature, a_tset_target = data_process(model, aerial_test_loader)
     
-    savemat('airound_data.mat', {'a_g_f_train':airound_g_train_feature, 
-                                 'a_g_l_train': airound_g_train_target,
-                                 'a_g_f_test':airound_g_test_feature, 
-                                 'a_g_l_test': airound_g_tset_target,
-                                 'a_a_f_train':airound_a_train_feature, 
-                                 'a_a_l_train': airound_a_train_target,
-                                 'a_a_f_test':airound_a_test_feature, 
-                                 'a_a_l_test': airound_a_tset_target}) 
+    savemat('airound_data.mat', {'x1_train':g_train_feature, 
+                                 'a_g_l_train': g_train_target,
+                                 'x1_test':g_test_feature, 
+                                 'a_g_l_test': g_tset_target,
+                                 'x2_train':a_train_feature, 
+                                 'a_a_l_train': a_train_target,
+                                 'x2_test':a_test_feature, 
+                                 'a_a_l_test': a_tset_target}) 
 
 
 if __name__ == "__main__":
