@@ -59,15 +59,15 @@ def mymodel():
     print(my_model)
     return my_model    
     
-def data_process(model, train_loader):    
+def data_process(model, row_data):    
     target, feature = [], []
     model.eval()
     with torch.no_grad():
-        for batch_idx, (data, label) in enumerate(train_loader):            
+        for data, label in row_data:            
             data = data.cuda()
             feature.extend(model(data).cpu())
-            target.extend(label)  
-    print('ok\n')
+            target.extend(label)    
+    print("ok")              
     return feature, target
                
 def main():
@@ -83,39 +83,65 @@ def main():
         ground_val = MyDataset(txt_path='val_cvbrct_street.txt', transform=transform_train)
         ground_test = MyDataset(txt_path='test_cvbrct_street.txt', transform=transform_train)
         aerial_train = MyDataset(txt_path='tarin_cvbrct_air.txt', transform=transform_train)
-        aerial_val = MyDataset(txt_path='cal_cvbrct_air.txt', transform=transform_train)
+        aerial_val = MyDataset(txt_path='val_cvbrct_air.txt', transform=transform_train)
         aerial_test = MyDataset(txt_path='test_cvbrct_air.txt', transform=transform_train)
-    else:
+    elif (opt.data_set == "airound"):
         ground_train = MyDataset(txt_path='tarin_airound_ground.txt', transform=transform_train)
         ground_val = MyDataset(txt_path='val_airound_ground.txt', transform=transform_train)
         ground_test = MyDataset(txt_path='test_airound_ground.txt', transform=transform_train)
         aerial_train = MyDataset(txt_path='tarin_airound_air.txt', transform=transform_train)
         aerial_val = MyDataset(txt_path='val_airound_air.txt', transform=transform_train)
         aerial_test = MyDataset(txt_path='test_airound_air.txt', transform=transform_train)
+    else:
+        train_data = MyDataset(txt_path='train_list.txt', transform=transform_train)
 
-    ground_train_loader  = DataLoader(ground_train, batch_size=opt.batch_size)
-    ground_val_loader  = DataLoader(ground_val, batch_size=opt.batch_size)
-    ground_test_loader  = DataLoader(ground_test, batch_size=opt.batch_size)
-    aerial_train_loader  = DataLoader(aerial_train, batch_size=opt.batch_size)
-    aerial_val_loader  = DataLoader(aerial_val, batch_size=opt.batch_size)
-    aerial_test_loader  = DataLoader(aerial_test, batch_size=opt.batch_size)
-
-    # data_process
-    g_train_feature, g_train_target = data_process(model, ground_train_loader)
-    g_val_feature, g_val_target = data_process(model, ground_val_loader)
-    g_test_feature, g_tset_target = data_process(model, ground_test_loader)
-    a_train_feature, a_train_target = data_process(model, aerial_train_loader)
-    a_val_feature, a_val_target = data_process(model, aerial_val_loader)
-    a_test_feature, a_tset_target = data_process(model, aerial_test_loader)
+    if(opt.data_set == "demo"):
+        train_loader  = DataLoader(train_data, batch_size=opt.batch_size)
+        train_feature, train_target = data_process(model, train_loader)
+        savemat('demo.mat', {'train_feature': train_feature, 
+                        'train_feature': train_feature}) 
+    else:
+        ground_train_loader  = DataLoader(ground_train, batch_size=opt.batch_size)
+        ground_val_loader  = DataLoader(ground_val, batch_size=opt.batch_size)
+        ground_test_loader  = DataLoader(ground_test, batch_size=opt.batch_size)
+        aerial_train_loader  = DataLoader(aerial_train, batch_size=opt.batch_size)
+        aerial_val_loader  = DataLoader(aerial_val, batch_size=opt.batch_size)
+        aerial_test_loader  = DataLoader(aerial_test, batch_size=opt.batch_size)
+        
+        data_process
+        g_train_feature, g_train_target = data_process(model, ground_train_loader)
+        g_val_feature, g_val_target = data_process(model, ground_val_loader)
+        g_test_feature, g_test_target = data_process(model, ground_test_loader)
+        a_train_feature, a_train_target = data_process(model, aerial_train_loader)
+        a_val_feature, a_val_target = data_process(model, aerial_val_loader)
+        a_test_feature, a_test_target = data_process(model, aerial_test_loader)
     
-    savemat('airound_data.mat', {'x1_train':g_train_feature, 
-                                 'a_g_l_train': g_train_target,
-                                 'x1_test':g_test_feature, 
-                                 'a_g_l_test': g_tset_target,
-                                 'x2_train':a_train_feature, 
-                                 'a_a_l_train': a_train_target,
-                                 'x2_test':a_test_feature, 
-                                 'a_a_l_test': a_tset_target}) 
+        if (g_train_target == a_train_target) and (g_val_target == a_val_target) and (g_test_target == a_test_target):
+            train_target = a_train_target
+            val_target = g_val_target
+            test_target = g_test_target
+
+        if (opt.data_set == "cvbrct"):
+            savemat('airound_data.mat', {'x1_train':  g_train_feature,                                         
+                                        'x1_val':     g_val_feature,                                         
+                                        'x1_test':    g_test_feature,                                         
+                                        'x2_train':   a_train_feature,                                         
+                                        'x2_val':     a_val_feature,                                         
+                                        'x2_test':    a_test_feature, 
+                                        'gt_train':   train_target,
+                                        'gt_val':     val_target,
+                                        'gt_test':    test_target
+                                        }) 
+        else:
+            savemat('cvbrct_data.mat', {'x1_train':  g_train_feature,                                         
+                                        'x1_val':     g_val_feature,                                         
+                                        'x1_test':    g_test_feature,                                         
+                                        'x2_train':   a_train_feature,                                         
+                                        'x2_val':     a_val_feature,                                         
+                                        'x2_test':    a_test_feature, 
+                                        'gt_train':   train_target,
+                                        'gt_val':     val_target,
+                                        'gt_test':    test_target}) 
 
 
 if __name__ == "__main__":

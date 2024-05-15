@@ -10,4 +10,9 @@ test_airound_ground.txt
 tarin_airound_air.txt
 val_airound_air.txt
 test_airound_air.txt
+train_list.txt
+test_list.txt
 hsafoi.py
+ariound_data.mat
+cvbrct_data.mat
+opsl.m
