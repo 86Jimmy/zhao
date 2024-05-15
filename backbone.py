@@ -108,7 +108,7 @@ def main():
         aerial_val_loader  = DataLoader(aerial_val, batch_size=opt.batch_size)
         aerial_test_loader  = DataLoader(aerial_test, batch_size=opt.batch_size)
         
-        data_process
+        # data_process
         g_train_feature, g_train_target = data_process(model, ground_train_loader)
         g_val_feature, g_val_target = data_process(model, ground_val_loader)
         g_test_feature, g_test_target = data_process(model, ground_test_loader)
@@ -122,7 +122,7 @@ def main():
             test_target = g_test_target
 
         if (opt.data_set == "cvbrct"):
-            savemat('airound_data.mat', {'x1_train':  g_train_feature,                                         
+            savemat('cvbrct_data.mat', {'x1_train':  g_train_feature,                                         
                                         'x1_val':     g_val_feature,                                         
                                         'x1_test':    g_test_feature,                                         
                                         'x2_train':   a_train_feature,                                         
@@ -133,7 +133,7 @@ def main():
                                         'gt_test':    test_target
                                         }) 
         else:
-            savemat('cvbrct_data.mat', {'x1_train':  g_train_feature,                                         
+            savemat('airound_data.mat', {'x1_train':  g_train_feature,                                         
                                         'x1_val':     g_val_feature,                                         
                                         'x1_test':    g_test_feature,                                         
                                         'x2_train':   a_train_feature,                                         
