@@ -1,0 +1,13 @@
+tarin_cvbrct_street.txt
+val_cvbrct_street.txt
+test_cvbrct_street.txt
+tarin_cvbrct_air.txt
+val_cvbrct_air.txt
+test_cvbrct_air.txt
+tarin_airound_ground.txt
+val_airound_ground.txt 
+test_airound_ground.txt
+tarin_airound_air.txt
+val_airound_air.txt
+test_airound_air.txt
+hsafoi.py
