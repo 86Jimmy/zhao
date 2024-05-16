@@ -12,6 +12,7 @@ def reciprocal_Loss(p, alpha, c):
     reciprocal_Loss = torch.sum(label * (torch.digamma(S) - torch.digamma(alpha)), dim=1, keepdim=True)+1/torch.sum(((1-label)*(
             torch.digamma(S1) -torch.digamma(alp))), dim=1, keepdim=True)
     return reciprocal_Loss
+
 class EFN(nn.Module):
     def __init__(self,classes, dims, view):
         super(EFN, self).__init__()
