@@ -1,7 +1,7 @@
 import os
 import math
 
-txt_path = ['tarin_cvbrct_ground.txt', 'val_cvbrct_ground.txt','test_cvbrct_ground.txt',
+txt_path = ['tarin_cvbrct_street.txt', 'val_cvbrct_street.txt','test_cvbrct_street.txt',
             'tarin_cvbrct_air.txt', 'val_cvbrct_air.txt', 'test_cvbrct_air.txt',
 			'tarin_airound_ground.txt', 'val_airound_ground.txt', 'test_airound_ground.txt',
             'tarin_airound_air.txt', 'val_airound_air.txt','test_airound_air.txt']
@@ -12,6 +12,10 @@ def generate(dir, label, idx):
 	print(txt_path[idx*3])
 	print(txt_path[idx*3+1])
 	print(txt_path[idx*3+2])
+	a1 = [0, math.floor(len(files)*0.72)]	
+	a3 = [math.floor(len(files)*0.72)+1, math.floor(len(files)*0.8)]
+	a4 = [math.floor(len(files)*0.8)+1, math.floor(len(files))]
+	print(a1, a3, a4)
 	trainText = open(txt_path[idx*3],'a')	
 	for file in files[:math.floor(len(files)*0.72)]:
 		fileType = os.path.split(file)
@@ -21,8 +25,8 @@ def generate(dir, label, idx):
 		trainText.write(name)
 	trainText.close()
 
-	valText = open(txt_path[idx*3+1],'a')	
-	for file in files[math.floor(len(files)*0.72)+1 : math.floor(len(files)*0.8)]:
+	valText = open(txt_path[idx*3+2],'a')	
+	for file in files[math.floor(len(files)*0.72) : math.floor(len(files)*0.8)]:
 		fileType = os.path.split(file)
 		if fileType[1] == '.txt':
 			continue
@@ -31,7 +35,7 @@ def generate(dir, label, idx):
 	valText.close()
 
 	testText = open(txt_path[idx*3+1],'a')	
-	for file in files[math.floor(len(files)*0.8)+1 : ]:
+	for file in files[math.floor(len(files)*0.8) : ]:
 		fileType = os.path.split(file)
 		if fileType[1] == '.txt':
 			continue

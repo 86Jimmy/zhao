@@ -3,10 +3,10 @@ import torch
 import random
 import argparse
 import numpy as np
-import scipy.io as sio
+# import scipy.io as sio
 import torch.optim as optim
 from torch.autograd import Variable
-from torch.utils.data import Dataset
+# from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
 from evidential_fusion import EFN
 from dataset import Multi_view_data
@@ -19,12 +19,14 @@ def parse_option():
     parser.add_argument('--batch_size', type=int, default=200, metavar='N',
                         help='input batch size for training [default: 100]')
     # epoch=500
-    parser.add_argument('--epochs', type=int, default=10, metavar='N',
+    parser.add_argument('--epochs', type=int, default=200, metavar='N',
                         help='number of epochs to train [default: 200]')
     parser.add_argument('--view', type=int, default=2,
                         help='number of sense view')
     parser.add_argument('--classes', type=int, default=11,
                         help='number of class')
+    parser.add_argument('--data_name', type=str, default='cvbrct_data',
+                        help='dataset name: ["cvbrct", "airound"]')
     parser.add_argument('--seed', default=None, type=int,
                         help='seed for initializing training. ')
     # optimization
@@ -107,7 +109,6 @@ def train(model, epoch, optimizer, train_loader):
     print(f"train: loss:{'%.2f'%train_loss} acc:{'%.4f'%train_acc}")
     return train_loss, train_acc
 
-
 def evalute(model, loader):
     model.eval()
     loss_meter = AverageMeter()
@@ -130,6 +131,7 @@ def evalute(model, loader):
 
 
     return val_loss, val_acc
+
 def main():
     opt = parse_option()
     if torch.cuda.is_available():
@@ -137,18 +139,18 @@ def main():
         idx = torch.cuda.current_device()
         print('gpu名称:', torch.cuda.get_device_name(idx))
     print(opt)
-    # data loading
-    data_name = 'vgg-airound'
-    data_path = 'datasets/' + data_name
+    
+    # data loading    
+    data_name = opt.data_name
     dims = [[4096], [4096]]
     view_num = opt.view
     classes = opt.classes
-    train_loader = torch.utils.data.DataLoader(
-        Multi_view_data(data_path,'train',view_num), batch_size = opt.batch_size,shuffle=True)
-    val_loader = torch.utils.data.DataLoader(
-        Multi_view_data(data_path, 'val', view_num), batch_size=opt.batch_size, shuffle=False)
-    test_loader = torch.utils.data.DataLoader(
-        Multi_view_data(data_path, 'test', view_num), batch_size=opt.batch_size, shuffle=False)
+    train_loader = DataLoader(
+        Multi_view_data(data_name,'train',view_num), batch_size = opt.batch_size, shuffle=True)
+    val_loader = DataLoader(
+        Multi_view_data(data_name, 'val', view_num), batch_size=opt.batch_size, shuffle=False)
+    test_loader = DataLoader(
+        Multi_view_data(data_name, 'test', view_num), batch_size=opt.batch_size, shuffle=False)
 
     # model loading
     model = EFN(classes, dims, view_num)

@@ -32,7 +32,7 @@ class Multi_view_data(Dataset):
             for v_num in range(view_number):
                 self.X[v_num] = (dataset['x' + str(v_num + 1) + '_test'])
             y = dataset['gt_test']
-        tmp = np.zeros(y.shape[0])
+        tmp = np.zeros(y.shape[1])
         y = np.reshape(y, np.shape(tmp))
         self.y = y
 
